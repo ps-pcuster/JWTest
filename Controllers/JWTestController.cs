@@ -26,7 +26,7 @@ namespace JWTest.Controllers
         [HttpGet, Route("token")]
         public string GetToken()
         {
-            X509Certificate2 signingKey = _certProvider.GetCertByThumbprint("3592f8aa1998906ff1ddd397b7a8e8cb7dbc484d");
+            X509Certificate2 signingKey = _certProvider.GetCertByThumbprint("-- your cert thumbprint here --");
 
             var handler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -44,10 +44,10 @@ namespace JWTest.Controllers
             return handler.CreateEncodedJwt(tokenDescriptor);
         }
 
-        [HttpPost, Route("token")]
-        public void ReadToken([FromQuery] string token)
+        [HttpGet, Route("validation")]
+        public string ReadToken([FromQuery] string token)
         {
-            X509Certificate2 signingKey = _certProvider.GetCertByThumbprint("3592f8aa1998906ff1ddd397b7a8e8cb7dbc484d");
+            X509Certificate2 signingKey = _certProvider.GetCertByThumbprint("-- your cert thumbprint here --");
             var handler = new JwtSecurityTokenHandler();
             var claimsPrincipal = handler.ValidateToken(
                 token,
@@ -59,6 +59,8 @@ namespace JWTest.Controllers
                     TokenDecryptionKey = new X509SecurityKey(signingKey)
                 },
                 out SecurityToken securityToken);
+
+            return securityToken.ToString();
         }
     }
 }
